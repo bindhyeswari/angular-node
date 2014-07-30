@@ -1,0 +1,7 @@
+<div>
+    <input type="text" ng-model="inp_movie_search" ng-keydown="getMovie($event)"/>
+    {{message}}
+    <div ng-repeat="movie in movies">
+        <a href="#/movies/{{movie.id}}">{{movie.title}}</a>
+    </div>
+</div>

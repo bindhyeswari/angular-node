@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html ng-app="tmdbApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/css/base.css"/>
+    <script src="/angular/angular.js"></script>
+    <script src="/angular-route/angular-route.js"></script>
+
+    <script src="/js/configuration.js"></script>
+    <script>
+
+        // Develop the application for a user to search for movies by name using the tmdb api
+        // Steps
+        // script src angularjs
+        // get a hello world application up and running
+        // use the $http to make a request based on the following request
+
+        var myApp = angular.module('tmdbApp', ['ngRoute']);
+
+        myApp.config(['$routeProvider', function ($routeProvider) {
+            $routeProvider.when('/search', {
+                templateUrl: '/search.html',
+                controller: 'MovieSearchCtrl'
+            }).when('/movies/:id', {
+                templateUrl: '/details.html',
+                controller: 'MovieDetailsCtrl'
+            }).when('/movies', {
+                templateUrl: '/404.html',
+                controller: 'URLNotFoundCtrl'
+            }).otherwise({
+                redirectTo: '/search'
+            });
+        }]);
+
+
+        myApp.controller('MovieSearchCtrl', function ($scope, $http) {
+            $scope.message = 'Hello World!';
+
+            $scope.inp_movie_search = '';
+
+            $scope.getMovie = function (event) {
+                if (event.keyCode === 13) {
+                    console.log($scope.inp_movie_search);
+
+                    $http.get('http://api.themoviedb.org/3/search/movie?api_key=' + api_key + '&query=' + $scope.inp_movie_search)
+                            .success(function(data){
+                                $scope.movies = data['results'];
+                                console.log($scope.movies);
+                            });
+                }
+            };
+
+
+        });
+
+        myApp.controller('MovieDetailsCtrl', function ($scope, $http, $routeParams, $window) {
+
+            if ($routeParams.id === '-1') {
+                $scope.movie = {title: 'not found'};
+                $window.location.href = '#/movies';
+            } else {
+
+
+                $http.get('http://api.themoviedb.org/3/movie/' + $routeParams.id + '?api_key=' + api_key)
+                        .success(function(data){
+                            $scope.movie = data;
+                        }).error(function () {
+                            $scope.notfound = true;
+                            // $window.location.href = '#/movies';
+                        });
+            }
+
+
+        });
+
+        myApp.controller('URLNotFoundCtrl', function ($scope) {
+
+        });
+
+
+
+
+        console.log(api_key);
+    </script>
+</head>
+<body>
+<div ng-view>
+
+</div>
+</body>
+</html>
