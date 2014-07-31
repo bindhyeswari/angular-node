@@ -4,6 +4,7 @@
     "main": "./base.js",
     "dependencies": {
         "angular": "latest",
-        "angular-route": "latest"
+        "angular-route": "latest",
+        "jquery": "latest"
     }
 }
